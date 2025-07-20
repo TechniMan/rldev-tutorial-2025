@@ -4,8 +4,8 @@ import { Walls } from '../procgen/maps'
 
 export class Engine {
   // constants
-  public static readonly MAX_HEIGHT = 11
-  public static readonly MAX_WIDTH = 11
+  public static readonly SCREEN_WIDTH = 64
+  public static readonly SCREEN_HEIGHT = 48
 
   // instance
   display: ROT.Display
@@ -13,14 +13,12 @@ export class Engine {
   map: GameMap
 
   constructor() {
-    // initialisation
-    this.playerPosition = { x: 5, y: 5 }
     //TODO input handler
 
     // renderer
     this.display = new ROT.Display({
-      width: Engine.MAX_HEIGHT,
-      height: Engine.MAX_WIDTH,
+      width: Engine.SCREEN_WIDTH,
+      height: Engine.SCREEN_HEIGHT,
       forceSquareRatio: true
     })
     const container = this.display.getContainer()!
@@ -29,7 +27,8 @@ export class Engine {
     //TODO message log
 
     // map
-    this.map = Walls(Engine.MAX_WIDTH, Engine.MAX_HEIGHT)
+    this.map = Walls(Engine.SCREEN_WIDTH - 16, Engine.SCREEN_HEIGHT)
+    this.playerPosition = { x: this.map.mapWidth / 2, y: this.map.mapHeight / 2 }
 
     // add keydown listener
     window.addEventListener('keydown', (ev) => {
@@ -47,29 +46,27 @@ export class Engine {
       let movement = { x: 0, y: 0 }
       switch (event.key) {
         case '8':
-          if (this.playerPosition.y > 0) {
-            movement.y = -1
-          }
+          movement.y = -1
           break
         case '2':
-          if (this.playerPosition.y < Engine.MAX_HEIGHT - 1) {
-            movement.y = 1
-          }
+          movement.y = 1
           break
         case '4':
-          if (this.playerPosition.x > 0) {
-            movement.x = -1
-          }
+          movement.x = -1
           break
         case '6':
-          if (this.playerPosition.x < Engine.MAX_WIDTH - 1) {
-            movement.x = 1
-          }
+          movement.x = 1
           break
       }
-      if (this.map.isWalkable(this.playerPosition.x + movement.x, this.playerPosition.y + movement.y)) {
-        this.playerPosition.x += movement.x
-        this.playerPosition.y += movement.y
+
+      const nextX = this.playerPosition.x + movement.x
+      const nextY = this.playerPosition.y + movement.y
+      // is it a valid movement?
+      if (this.map.isInMap(nextX, nextY) && this.map.isWalkable(nextX, nextY)) {
+        this.playerPosition.x = nextX
+        this.playerPosition.y = nextY
+      } else {
+        //TODO optional: log error message for player?
       }
     }
 
@@ -79,6 +76,12 @@ export class Engine {
     for (let y = 0; y < this.map.mapHeight; ++y) {
       for (let x = 0; x < this.map.mapWidth; ++x) {
         this.display.draw(x, y, this.map.displayChar(x, y), 'white', 'black')
+      }
+    }
+    // TODO render ui area
+    for (let y = 0; y < Engine.SCREEN_HEIGHT; ++y) {
+      for (let x = this.map.mapWidth; x < Engine.SCREEN_WIDTH; ++x) {
+        this.display.draw(x, y, '~', 'blue', 'black')
       }
     }
     // render player to screen
