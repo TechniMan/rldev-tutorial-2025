@@ -1,6 +1,8 @@
 import * as ROT from 'rot-js'
 import { GameMap } from './GameMap'
 import { Walls } from '../procgen/maps'
+import Rect from '../maths/Rect'
+import Vector from '../maths/Vector'
 
 export class Engine {
   // constants
@@ -11,6 +13,10 @@ export class Engine {
   display: ROT.Display
   playerPosition
   map: GameMap
+
+  // render areas
+  mapRenderRect: Rect
+  uiRenderRect: Rect
 
   constructor() {
     //TODO input handler
@@ -27,8 +33,23 @@ export class Engine {
     //TODO message log
 
     // map
-    this.map = Walls(Engine.SCREEN_WIDTH - 16, Engine.SCREEN_HEIGHT)
-    this.playerPosition = { x: this.map.mapWidth / 2, y: this.map.mapHeight / 2 }
+    this.map = Walls(
+      Engine.SCREEN_WIDTH - 16,
+      Engine.SCREEN_HEIGHT
+    )
+    this.mapRenderRect = new Rect(
+      0, 0,
+      Engine.SCREEN_WIDTH - 16, Engine.SCREEN_HEIGHT
+    )
+    this.playerPosition = new Vector(
+      this.map.mapWidth / 2,
+      this.map.mapHeight / 2
+    )
+
+    this.uiRenderRect = new Rect(
+      this.mapRenderRect.right, 0,
+      16, Engine.SCREEN_HEIGHT
+    )
 
     // add keydown listener
     window.addEventListener('keydown', (ev) => {
@@ -59,12 +80,13 @@ export class Engine {
           break
       }
 
-      const nextX = this.playerPosition.x + movement.x
-      const nextY = this.playerPosition.y + movement.y
+      const next = new Vector(
+        this.playerPosition.x + movement.x,
+        this.playerPosition.y + movement.y
+      )
       // is it a valid movement?
-      if (this.map.isInMap(nextX, nextY) && this.map.isWalkable(nextX, nextY)) {
-        this.playerPosition.x = nextX
-        this.playerPosition.y = nextY
+      if (this.map.isInMap(next.x, next.y) && this.map.isWalkable(next.x, next.y)) {
+        this.playerPosition = next
       } else {
         //TODO optional: log error message for player?
       }
@@ -81,7 +103,7 @@ export class Engine {
     // TODO render ui area
     for (let y = 0; y < Engine.SCREEN_HEIGHT; ++y) {
       for (let x = this.map.mapWidth; x < Engine.SCREEN_WIDTH; ++x) {
-        this.display.draw(x, y, '~', 'blue', 'black')
+        this.display.draw(x, y, '*', 'black', 'white')
       }
     }
     // render player to screen
