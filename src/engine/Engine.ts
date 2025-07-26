@@ -9,9 +9,11 @@ export class Engine {
   public static readonly SCREEN_WIDTH = 64
   public static readonly SCREEN_HEIGHT = 48
 
+  public static lightBlue = 'lightblue'
+  public static darkBlue = 'blue'
+
   // instance
   display: ROT.Display
-  playerPosition
   map: GameMap
 
   // render areas
@@ -40,10 +42,6 @@ export class Engine {
     this.mapRenderRect = new Rect(
       0, 0,
       Engine.SCREEN_WIDTH - 16, Engine.SCREEN_HEIGHT
-    )
-    this.playerPosition = new Vector(
-      this.map.mapWidth / 2,
-      this.map.mapHeight / 2
     )
 
     this.uiRenderRect = new Rect(
@@ -81,12 +79,12 @@ export class Engine {
       }
 
       const next = new Vector(
-        this.playerPosition.x + movement.x,
-        this.playerPosition.y + movement.y
+        this.map.player.position.x + movement.x,
+        this.map.player.position.y + movement.y
       )
       // is it a valid movement?
       if (this.map.isInMap(next.x, next.y) && this.map.isWalkable(next.x, next.y)) {
-        this.playerPosition = next
+        this.map.player.position = next
       } else {
         //TODO optional: log error message for player?
       }
@@ -97,16 +95,36 @@ export class Engine {
     // render map
     for (let y = 0; y < this.map.mapHeight; ++y) {
       for (let x = 0; x < this.map.mapWidth; ++x) {
-        this.display.draw(x, y, this.map.displayChar(x, y), 'white', 'black')
+        this.display.draw(
+          x,
+          y,
+          this.map.charToDisplayAt(x, y),
+          Engine.lightBlue,
+          Engine.darkBlue
+        )
       }
     }
     // TODO render ui area
     for (let y = 0; y < Engine.SCREEN_HEIGHT; ++y) {
       for (let x = this.map.mapWidth; x < Engine.SCREEN_WIDTH; ++x) {
-        this.display.draw(x, y, '*', 'black', 'white')
+        this.display.draw(
+          x,
+          y,
+          '*',
+          Engine.lightBlue,
+          Engine.darkBlue
+        )
       }
     }
     // render player to screen
-    this.display.draw(this.playerPosition.x, this.playerPosition.y, '@', 'white', 'black')
+    for (let e of this.map.entities) {
+      this.display.draw(
+        e.position.x,
+        e.position.y,
+        e.char,
+        e.fg,
+        e.bg
+      )
+    }
   }
 }

@@ -2,31 +2,30 @@ export default class Vector {
   private _x: number
   private _y: number
 
-  constructor(x: number, y: number) {
-    this._x = x
-    this._y = y
-  }
-
   public get x() {
     return this._x
   }
   public get y() {
     return this._y
   }
-
   public get length() {
-    return Math.sqrt((this._x * this._x) + (this._y * this._y))
+    return Math.sqrt((this.x * this.x) + (this.y * this.y))
   }
 
-  add(other: Vector): Vector {
-    return new Vector(this._x + other._x, this._y + other._y)
+  constructor(x: number = 0, y: number = 0) {
+    this._x = x
+    this._y = y
+  }
+
+  plus(other: Vector): Vector {
+    return new Vector(this.x + other.x, this.y + other.y)
   }
 
   subtract(other: Vector): Vector {
-    return new Vector(this._x - other._x, this._y - other._y)
+    return new Vector(this.x - other.x, this.y - other.y)
   }
 
   dot(other: Vector): Vector {
-    return new Vector(this._x * other._x, this._y * other._y)
+    return new Vector(this.x * other.x, this.y * other.y)
   }
 }
