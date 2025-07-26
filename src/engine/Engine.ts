@@ -1,6 +1,6 @@
 import * as ROT from 'rot-js'
 import { GameMap } from './GameMap'
-import { Walls } from '../procgen/maps'
+import { RockyDesert } from '../procgen/maps'
 import Rect from '../maths/Rect'
 import Vector from '../maths/Vector'
 
@@ -35,7 +35,7 @@ export class Engine {
     //TODO message log
 
     // map
-    this.map = Walls(
+    this.map = RockyDesert(
       Engine.SCREEN_WIDTH - 16,
       Engine.SCREEN_HEIGHT
     )

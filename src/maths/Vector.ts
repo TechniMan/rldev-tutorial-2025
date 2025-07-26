@@ -28,4 +28,8 @@ export default class Vector {
   dot(other: Vector): Vector {
     return new Vector(this.x * other.x, this.y * other.y)
   }
+
+  matches(other: Vector): boolean {
+    return this.x === other.x && this.y === other.y
+  }
 }

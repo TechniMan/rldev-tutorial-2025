@@ -1,5 +1,6 @@
 import type Actor from '../entities/Actor'
 import type Entity from '../entities/Entity'
+import Vector from '../maths/Vector'
 
 export class GameMap {
   private _mapWidth: number
@@ -35,6 +36,11 @@ export class GameMap {
 
     this.walkable = new Array(this.mapLength)
     this.display = new Array(this.mapLength)
+
+    for (let idx = 0; idx < this.mapLength; ++idx) {
+      this.walkable[idx] = true
+      this.display[idx] = '.'
+    }
   }
 
   indexOf(x: number, y: number): number {
@@ -46,7 +52,8 @@ export class GameMap {
   }
 
   isWalkable(x: number, y: number): boolean {
-    return this.walkable[this.indexOf(x, y)]
+    return this.walkable[this.indexOf(x, y)] ||
+      this._entities.any(e => e.blocksMovement && e.position.matches(new Vector(x, y)))
   }
 
   charToDisplayAt(x: number, y: number): string {
