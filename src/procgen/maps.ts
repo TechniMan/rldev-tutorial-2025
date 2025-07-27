@@ -2,6 +2,7 @@ import { RNG } from 'rot-js'
 import { GameMap } from '../engine/GameMap'
 import { spawnPlayer } from '../entities/spawn'
 import Vector from '../maths/Vector'
+import { wallTile } from '../engine/Tile'
 
 // generates a box around the edge of the map
 export function Walls(w: number, h: number): GameMap {
@@ -12,8 +13,7 @@ export function Walls(w: number, h: number): GameMap {
   for (let y = 0; y < h; ++y) {
     for (let x = 0; x < w; ++x) {
       if (y === 0 || y === h - 1 || x === 0 || x === w - 1) {
-        map.walkable[map.indexOf(x, y)] = false
-        map.display[map.indexOf(x, y)] = '#'
+        map.tiles[map.indexOf(x, y)] = wallTile()
       }
     }
   }
@@ -32,8 +32,7 @@ export function RockyDesert(w: number, h: number): GameMap {
       RNG.getUniformInt(1, h - 2)
     )
     if (map.isWalkable(rockPos.x, rockPos.y)) {
-      map.walkable[map.indexOf(rockPos.x, rockPos.y)] = false
-      map.display[map.indexOf(rockPos.x, rockPos.y)] = '#'
+      map.tiles[map.indexOf(rockPos.x, rockPos.y)] = wallTile()
     }
   }
 

@@ -103,8 +103,8 @@ export class Engine {
           x + renderOffset.x,
           y + renderOffset.y,
           this.map.charToDisplayAt(x, y),
-          Engine.lightBlue,
-          Engine.darkBlue
+          'white',
+          'black'
         )
       }
     }
@@ -126,8 +126,8 @@ export class Engine {
           x,
           y,
           '*',
-          Engine.lightBlue,
-          Engine.darkBlue
+          'black',
+          'grey'
         )
       }
     }

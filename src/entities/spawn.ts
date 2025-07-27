@@ -8,8 +8,8 @@ export function spawnPlayer(
   return new Actor(
     position,
     '@',
-    Engine.lightBlue,
-    Engine.darkBlue,
+    'white',
+    'black',
     'Player'
   )
 }

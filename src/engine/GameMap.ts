@@ -1,6 +1,7 @@
 import type Actor from '../entities/Actor'
 import type Entity from '../entities/Entity'
 import Vector from '../maths/Vector'
+import { floorTile, type Tile } from './Tile'
 
 export class GameMap {
   private _mapWidth: number
@@ -10,9 +11,7 @@ export class GameMap {
   private _player: Actor
   private _entities: Entity[]
 
-  walkable: boolean[]
-  //TODO transparent array
-  display: string[]
+  tiles: Tile[]
 
   public get mapWidth(): number {
     return this._mapWidth
@@ -34,12 +33,10 @@ export class GameMap {
     this._entities = [p]
     this._player = p
 
-    this.walkable = new Array(this.mapLength)
-    this.display = new Array(this.mapLength)
+    this.tiles = new Array(this.mapLength)
 
     for (let idx = 0; idx < this.mapLength; ++idx) {
-      this.walkable[idx] = true
-      this.display[idx] = '.'
+      this.tiles[idx] = floorTile()
     }
   }
 
@@ -52,12 +49,16 @@ export class GameMap {
   }
 
   isWalkable(x: number, y: number): boolean {
-    return this.walkable[this.indexOf(x, y)] ||
+    return this.tiles[this.indexOf(x, y)].walkable ||
       this._entities.any(e => e.blocksMovement && e.position.matches(new Vector(x, y)))
   }
 
   charToDisplayAt(x: number, y: number): string {
     // get just the first character
-    return this.display[this.indexOf(x, y)][0]
+    return this.tiles[this.indexOf(x, y)].char
   }
+
+  //TODO draws the map to the given display area
+  // draw(): void {
+  // }
 }
