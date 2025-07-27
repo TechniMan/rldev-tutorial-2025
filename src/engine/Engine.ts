@@ -8,6 +8,8 @@ export class Engine {
   // constants
   public static readonly SCREEN_WIDTH = 64
   public static readonly SCREEN_HEIGHT = 48
+  public static readonly SCREEN_HEIGHT_HALF = 24
+  public static readonly playerScreenPosition = new Vector(Engine.SCREEN_HEIGHT_HALF, Engine.SCREEN_HEIGHT_HALF)
 
   public static lightBlue = 'lightblue'
   public static darkBlue = 'blue'
@@ -35,10 +37,7 @@ export class Engine {
     //TODO message log
 
     // map
-    this.map = RockyDesert(
-      Engine.SCREEN_WIDTH - 16,
-      Engine.SCREEN_HEIGHT
-    )
+    this.map = RockyDesert(64, 64)
     this.mapRenderRect = new Rect(
       0, 0,
       Engine.SCREEN_WIDTH - 16, Engine.SCREEN_HEIGHT
@@ -92,21 +91,37 @@ export class Engine {
 
     // clear display
     this.display.clear()
+
+    // offset world drawing by the player's position
+    // i.e. like a camera is following them
+    const playerMapPosition = this.map.player.position
+    const renderOffset = new Vector().subtract(playerMapPosition).plus(Engine.playerScreenPosition)
     // render map
     for (let y = 0; y < this.map.mapHeight; ++y) {
       for (let x = 0; x < this.map.mapWidth; ++x) {
         this.display.draw(
-          x,
-          y,
+          x + renderOffset.x,
+          y + renderOffset.y,
           this.map.charToDisplayAt(x, y),
           Engine.lightBlue,
           Engine.darkBlue
         )
       }
     }
-    // TODO render ui area
-    for (let y = 0; y < Engine.SCREEN_HEIGHT; ++y) {
-      for (let x = this.map.mapWidth; x < Engine.SCREEN_WIDTH; ++x) {
+    // render entities
+    for (let e of this.map.entities) {
+      this.display.draw(
+        e.position.x + renderOffset.x,
+        e.position.y + renderOffset.y,
+        e.char,
+        e.fg,
+        e.bg
+      )
+    }
+
+    // TODO render ui area (placeholder for now)
+    for (let y = 0; y < this.uiRenderRect.bottom; ++y) {
+      for (let x = this.uiRenderRect.left; x < this.uiRenderRect.right; ++x) {
         this.display.draw(
           x,
           y,
@@ -115,16 +130,6 @@ export class Engine {
           Engine.darkBlue
         )
       }
-    }
-    // render player to screen
-    for (let e of this.map.entities) {
-      this.display.draw(
-        e.position.x,
-        e.position.y,
-        e.char,
-        e.fg,
-        e.bg
-      )
     }
   }
 }

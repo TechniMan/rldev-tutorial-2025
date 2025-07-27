@@ -39,3 +39,14 @@ export function RockyDesert(w: number, h: number): GameMap {
 
   return map
 }
+
+export function TiledPlanet(): GameMap {
+  // make a large space to play in
+  const map = Walls(1024, 1024)
+
+  //TODO randomly determine nature of large tiles of the map, e.g. 32*32 each
+  //TODO generate each tile based on its type, filling in the map as we go
+  //TODO e.g. empty, sparse rocks, walled structure, etc
+
+  return map
+}
