@@ -3,6 +3,7 @@ import { GameMap } from './GameMap'
 import { RockyDesert } from '../procgen/maps'
 import Rect from '../maths/Rect'
 import Vector from '../maths/Vector'
+import * as Colours from '../maths/Colours'
 
 export class Engine {
   // constants
@@ -75,6 +76,22 @@ export class Engine {
         case '6':
           movement.x = 1
           break
+        case '7':
+          movement.x = -1
+          movement.y = -1
+          break
+        case '9':
+          movement.x = 1
+          movement.y = -1
+          break
+        case '3':
+          movement.x = 1
+          movement.y = 1
+          break
+        case '1':
+          movement.x = -1
+          movement.y = 1
+          break
       }
 
       const next = new Vector(
@@ -88,6 +105,7 @@ export class Engine {
         //TODO optional: log error message for player?
       }
     }
+    this.map.updateFov()
 
     // clear display
     this.display.clear()
@@ -99,12 +117,19 @@ export class Engine {
     // render map
     for (let y = 0; y < this.map.mapHeight; ++y) {
       for (let x = 0; x < this.map.mapWidth; ++x) {
+        const tile = this.map.tiles[this.map.indexOf(x, y)]
+        // if currently visible, is lit
+        const graphic = tile.visible ? tile.lit :
+          // if seen previously, is unlit
+          tile.seen ? tile.unlit :
+            // else, is invisible
+            { fg: Colours.black(), bg: Colours.black() }
         this.display.draw(
           x + renderOffset.x,
           y + renderOffset.y,
-          this.map.charToDisplayAt(x, y),
-          'white',
-          'black'
+          tile.char,
+          graphic.fg.asHex,
+          graphic.bg.asHex
         )
       }
     }
@@ -126,8 +151,8 @@ export class Engine {
           x,
           y,
           '*',
-          'black',
-          'grey'
+          Colours.uiFg().asHex,
+          Colours.uiBg().asHex
         )
       }
     }

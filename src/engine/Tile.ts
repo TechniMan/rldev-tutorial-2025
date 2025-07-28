@@ -1,12 +1,16 @@
+import type Colour from '../maths/Colour'
+import * as Colours from '../maths/Colours'
+
 export interface TileGraphic {
-  fg: string
-  bg: string
+  fg: Colour
+  bg: Colour
 }
 
 export class Tile {
   walkable: boolean
   transparent: boolean
   visible: boolean
+  visibility: number
   seen: boolean
   char: string
   unlit: TileGraphic
@@ -22,6 +26,7 @@ export class Tile {
     this.walkable = walkable
     this.transparent = transparent
     this.visible = false
+    this.visibility = 0
     this.seen = false
     this.char = char
     this.unlit = unlit
@@ -35,12 +40,12 @@ export function floorTile(): Tile {
     true,
     '.',
     {
-      fg: 'brown',
-      bg: 'black'
+      bg: Colours.planetDim(),
+      fg: Colours.black()
     },
     {
-      fg: 'red',
-      bg: 'black'
+      bg: Colours.planetBright(),
+      fg: Colours.black()
     }
   )
 }
@@ -51,12 +56,12 @@ export function wallTile(): Tile {
     false,
     '#',
     {
-      fg: 'brown',
-      bg: 'black'
+      bg: Colours.planetDim(),
+      fg: Colours.black()
     },
     {
-      fg: 'red',
-      bg: 'black'
+      bg: Colours.planetBright(),
+      fg: Colours.black()
     }
   )
 }

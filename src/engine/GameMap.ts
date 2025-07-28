@@ -1,3 +1,4 @@
+import { FOV } from 'rot-js'
 import type Actor from '../entities/Actor'
 import type Entity from '../entities/Entity'
 import Vector from '../maths/Vector'
@@ -56,6 +57,36 @@ export class GameMap {
   charToDisplayAt(x: number, y: number): string {
     // get just the first character
     return this.tiles[this.indexOf(x, y)].char
+  }
+
+  // Does the light pass through x,y?
+  lightPasses(x: number, y: number): boolean {
+    // fov might give coords outside of map, so guard against it
+    return this.isInMap(x, y) && this.tiles[this.indexOf(x, y)].transparent
+  }
+
+  updateFov() {
+    // reset visibility of tiles
+    for (let i = 0; i < this.mapLength; ++i) {
+      this.tiles[i].visible = false
+    }
+
+    // determine currently visible tiles
+    const fov = new FOV.PreciseShadowcasting(this.lightPasses.bind(this))
+    fov.compute(
+      // centre around player
+      this.player.position.x, this.player.position.y,
+      // fov range of 16
+      16,
+      // r is radius from player, v is visibility in range [0, 1]
+      (x, y, r, v) => {
+        // if visible, mark as so
+        if (v) {
+          this.tiles[this.indexOf(x, y)].visible = true
+          this.tiles[this.indexOf(x, y)].seen = true
+          this.tiles[this.indexOf(x, y)].visibility = v // r / 16.0
+        }
+      })
   }
 
   //TODO draws the map to the given display area

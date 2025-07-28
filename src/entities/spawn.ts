@@ -1,6 +1,6 @@
-import { Engine } from '../engine/Engine'
 import type Vector from '../maths/Vector'
 import Actor from './Actor'
+import * as Colours from '../maths/Colours'
 
 export function spawnPlayer(
   position: Vector
@@ -8,8 +8,8 @@ export function spawnPlayer(
   return new Actor(
     position,
     '@',
-    'white',
-    'black',
+    Colours.white().asHex,
+    Colours.planetBright().asHex,
     'Player'
   )
 }
