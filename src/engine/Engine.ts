@@ -4,6 +4,7 @@ import { RockyDesert } from '../procgen/maps'
 import Rect from '../maths/Rect'
 import Vector from '../maths/Vector'
 import * as Colours from '../maths/Colours'
+import { MovementAction } from '../input/Action'
 
 export class Engine {
   // constants
@@ -94,16 +95,13 @@ export class Engine {
           break
       }
 
-      const next = new Vector(
-        this.map.player.position.x + movement.x,
-        this.map.player.position.y + movement.y
-      )
-      // is it a valid movement?
-      if (this.map.isInMap(next.x, next.y) && this.map.isWalkable(next.x, next.y)) {
-        this.map.player.position = next
-      } else {
-        //TODO optional: log error message for player?
-      }
+      // create the relevant action
+      const action = new MovementAction(new Vector(
+        movement.x,
+        movement.y
+      ))
+      // have the player perform it
+      action.perform(this.map.player, this.map)
     }
     this.map.updateFov()
 

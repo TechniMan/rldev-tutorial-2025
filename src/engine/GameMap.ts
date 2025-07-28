@@ -79,7 +79,7 @@ export class GameMap {
       // fov range of 16
       16,
       // r is radius from player, v is visibility in range [0, 1]
-      (x, y, r, v) => {
+      (x, y, _r, v) => {
         // if visible, mark as so
         if (v) {
           this.tiles[this.indexOf(x, y)].visible = true
