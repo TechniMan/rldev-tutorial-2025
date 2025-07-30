@@ -13,3 +13,27 @@ export function spawnPlayer(
     'Player'
   )
 }
+
+export function spawnBugling(
+  position: Vector
+): Actor {
+  return new Actor(
+    position,
+    'b',
+    Colours.entityFg().asHex,
+    Colours.planetBrightBg().asHex,
+    'Bugling'
+  )
+}
+
+export function spawnBug(
+  position: Vector
+): Actor {
+  return new Actor(
+    position,
+    'B',
+    Colours.entityFg().asHex,
+    Colours.planetBrightBg().asHex,
+    'Bug'
+  )
+}

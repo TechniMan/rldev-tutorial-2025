@@ -1,6 +1,6 @@
 import { RNG } from 'rot-js'
 import { GameMap } from '../engine/GameMap'
-import { spawnPlayer } from '../entities/spawn'
+import { spawnBug, spawnBugling, spawnPlayer } from '../entities/spawn'
 import Vector from '../maths/Vector'
 import { wallTile } from '../engine/Tile'
 
@@ -22,7 +22,7 @@ export function Walls(w: number, h: number): GameMap {
 }
 
 export function RockyDesert(w: number, h: number): GameMap {
-  // we'll find a spot for the player soon
+  // default map with edges and player in centre
   const map = Walls(w, h)
 
   // initiate some random rocks in the landscape
@@ -33,6 +33,22 @@ export function RockyDesert(w: number, h: number): GameMap {
     )
     if (map.isWalkable(rockPos.x, rockPos.y)) {
       map.tiles[map.indexOf(rockPos.x, rockPos.y)] = wallTile()
+    }
+  }
+
+  // sprinkle in some basic enemies
+  for (let attempt = 0; attempt < 20; ++attempt) {
+    const bugPos = new Vector(
+      RNG.getUniformInt(1, w - 2),
+      RNG.getUniformInt(1, h - 2)
+    )
+    if (map.isWalkable(bugPos.x, bugPos.y)) {
+      // avg 4 buglings : 1 bug
+      if (RNG.getUniform() < 0.8) {
+        map.entities.push(spawnBugling(bugPos))
+      } else {
+        map.entities.push(spawnBug(bugPos))
+      }
     }
   }
 

@@ -135,13 +135,15 @@ export class Engine {
     }
     // render entities
     for (let e of this.map.entities) {
-      this.display.draw(
-        e.position.x + renderOffset.x,
-        e.position.y + renderOffset.y,
-        e.char,
-        e.fg,
-        e.bg
-      )
+      if (this.map.isVisible(e.position.x, e.position.y)) {
+        this.display.draw(
+          e.position.x + renderOffset.x,
+          e.position.y + renderOffset.y,
+          e.char,
+          e.fg,
+          e.bg
+        )
+      }
     }
 
     // TODO render ui area (placeholder for now)

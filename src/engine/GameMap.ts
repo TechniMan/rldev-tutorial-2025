@@ -1,7 +1,6 @@
 import { FOV } from 'rot-js'
 import type Actor from '../entities/Actor'
 import type Entity from '../entities/Entity'
-import Vector from '../maths/Vector'
 import { floorTile, type Tile } from './Tile'
 
 export class GameMap {
@@ -51,7 +50,15 @@ export class GameMap {
 
   isWalkable(x: number, y: number): boolean {
     return this.tiles[this.indexOf(x, y)].walkable ||
-      this._entities.any(e => e.blocksMovement && e.position.matches(new Vector(x, y)))
+      this.getBlockingEntityAtLocationOrNull(x, y) !== undefined
+  }
+
+  isVisible(x: number, y: number): boolean {
+    return this.tiles[this.indexOf(x, y)].visible
+  }
+
+  getBlockingEntityAtLocationOrNull(x: number, y: number): Entity | undefined {
+    return this.entities.find((e) => e.blocksMovement && e.position.x === x && e.position.y === y)
   }
 
   charToDisplayAt(x: number, y: number): string {
