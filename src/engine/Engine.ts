@@ -31,7 +31,9 @@ export class Engine {
     this.display = new ROT.Display({
       width: Engine.SCREEN_WIDTH,
       height: Engine.SCREEN_HEIGHT,
-      forceSquareRatio: true
+      forceSquareRatio: true,
+      bg: Colours.uiBg().asHex,
+      fg: Colours.uiFg().asHex
     })
     const container = this.display.getContainer()!
     document.body.append(container)
@@ -121,7 +123,7 @@ export class Engine {
           // if seen previously, is unlit
           tile.seen ? tile.unlit :
             // else, is invisible
-            { fg: Colours.black(), bg: Colours.black() }
+            { fg: Colours.blank(), bg: Colours.blank() }
         this.display.draw(
           x + renderOffset.x,
           y + renderOffset.y,
@@ -154,5 +156,10 @@ export class Engine {
         )
       }
     }
+    this.display.drawText(
+      this.uiRenderRect.left + 1,
+      this.uiRenderRect.top + 1,
+      'Player'
+    )
   }
 }

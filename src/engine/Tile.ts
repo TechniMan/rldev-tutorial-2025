@@ -40,12 +40,12 @@ export function floorTile(): Tile {
     true,
     '.',
     {
-      bg: Colours.planetDim(),
-      fg: Colours.black()
+      bg: Colours.planetDarkBg(),
+      fg: Colours.planetDarkFg()
     },
     {
-      bg: Colours.planetBright(),
-      fg: Colours.black()
+      bg: Colours.planetBrightBg(),
+      fg: Colours.planetBrightFg()
     }
   )
 }
@@ -56,12 +56,12 @@ export function wallTile(): Tile {
     false,
     '#',
     {
-      bg: Colours.planetDim(),
-      fg: Colours.black()
+      bg: Colours.planetDarkBg(),
+      fg: Colours.planetDarkFg()
     },
     {
-      bg: Colours.planetBright(),
-      fg: Colours.black()
+      bg: Colours.planetBrightBg(),
+      fg: Colours.planetBrightFg()
     }
   )
 }

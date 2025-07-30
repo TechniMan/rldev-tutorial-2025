@@ -1,36 +1,49 @@
 import Colour from './Colour'
 
+// greyscales
 export function black(): Colour {
-  return new Colour(0, 0, 0)
+  return Colour.rgb(0, 0, 0)
 }
-
 export function grey(): Colour {
-  return new Colour(128, 128, 128)
+  return Colour.rgb(128, 128, 128)
 }
-
 export function white(): Colour {
-  return new Colour(255, 255, 255)
+  return Colour.rgb(255, 255, 255)
 }
 
+// colours
 export function brown(): Colour {
-  return new Colour(128, 48, 48)
+  return Colour.rgb(128, 48, 48)
 }
 export function dimBrown(): Colour {
-  return new Colour(64, 48, 48)
+  return Colour.rgb(64, 48, 48)
 }
-
-export function red(): Colour {
-  return new Colour(255, 0, 0)
+export function dimRed(): Colour {
+  return Colour.rgb(192, 0, 0)
 }
-export function green(): Colour {
-  return new Colour(0, 255, 0)
+export function brightRed(): Colour {
+  return Colour.rgb(255, 0, 0)
 }
-export function blue(): Colour {
-  return new Colour(0, 0, 255)
+export function dimGreen(): Colour {
+  return Colour.rgb(0, 192, 0)
+}
+export function brightGreen(): Colour {
+  return Colour.rgb(0, 255, 0)
+}
+export function dimBlue(): Colour {
+  return Colour.rgb(0, 0, 192)
+}
+export function brightBlue(): Colour {
+  return Colour.rgb(0, 0, 255)
 }
 
 // variables
-export const planetBright = brown
-export const planetDim = dimBrown
-export const uiFg = black
-export const uiBg = grey
+export const planetBrightFg = black
+export const planetBrightBg = brown
+export const planetDarkFg = black
+export const planetDarkBg = dimBrown
+export const entityFg = white
+
+export const uiBg = black
+export const uiFg = dimGreen
+export const blank = black

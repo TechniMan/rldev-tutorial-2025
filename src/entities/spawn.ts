@@ -8,8 +8,8 @@ export function spawnPlayer(
   return new Actor(
     position,
     '@',
-    Colours.white().asHex,
-    Colours.planetBright().asHex,
+    Colours.entityFg().asHex,
+    Colours.planetBrightBg().asHex,
     'Player'
   )
 }
