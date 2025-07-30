@@ -39,3 +39,17 @@ export class MovementAction extends ActionWithDirection {
     }
   }
 }
+
+export class BumpAction extends ActionWithDirection {
+  perform = (performer: Entity, gameMap: GameMap) => {
+    const destX = performer.position.x + this.direction.x
+    const destY = performer.position.y + this.direction.y
+
+    if (gameMap.getBlockingEntityAtLocation(destX, destY)) {
+      //TODO return new MeleeAttackAction(this.direction).perform(performer as Actor, gameMap)
+      console.log('Bumped into an entity!')
+    } else {
+      return new MovementAction(this.direction).perform(performer, gameMap)
+    }
+  }
+}

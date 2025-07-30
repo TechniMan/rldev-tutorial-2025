@@ -4,7 +4,7 @@ import { RockyDesert } from '../procgen/maps'
 import Rect from '../maths/Rect'
 import Vector from '../maths/Vector'
 import * as Colours from '../maths/Colours'
-import { MovementAction } from '../input/Action'
+import { BumpAction } from '../input/Action'
 
 export class Engine {
   // constants
@@ -98,7 +98,7 @@ export class Engine {
       }
 
       // create the relevant action
-      const action = new MovementAction(new Vector(
+      const action = new BumpAction(new Vector(
         movement.x,
         movement.y
       ))

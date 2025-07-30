@@ -50,14 +50,14 @@ export class GameMap {
 
   isWalkable(x: number, y: number): boolean {
     return this.tiles[this.indexOf(x, y)].walkable &&
-      this.getBlockingEntityAtLocationOrNull(x, y) === undefined
+      this.getBlockingEntityAtLocation(x, y) === undefined
   }
 
   isVisible(x: number, y: number): boolean {
     return this.tiles[this.indexOf(x, y)].visible
   }
 
-  getBlockingEntityAtLocationOrNull(x: number, y: number): Entity | undefined {
+  getBlockingEntityAtLocation(x: number, y: number): Entity | undefined {
     return this.entities.find((e) => e.blocksMovement && e.position.x === x && e.position.y === y)
   }
 
