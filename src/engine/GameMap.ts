@@ -1,7 +1,11 @@
-import { FOV } from 'rot-js'
+import { Display, FOV } from 'rot-js'
 import type Actor from '../entities/Actor'
 import type Entity from '../entities/Entity'
 import { floorTile, type Tile } from './Tile'
+import Vector from '../maths/Vector'
+import { Engine } from './Engine'
+import * as Colours from '../maths/colours'
+import type Rect from '../maths/Rect'
 
 export class GameMap {
   private _mapWidth: number
@@ -69,7 +73,8 @@ export class GameMap {
   // Does the light pass through x,y?
   lightPasses(x: number, y: number): boolean {
     // fov might give coords outside of map, so guard against it
-    return this.isInMap(x, y) && this.tiles[this.indexOf(x, y)].transparent
+    return this.isInMap(x, y) && this.isWalkable(x, y)
+    // this.tiles[this.indexOf(x, y)].transparent
   }
 
   updateFov() {
@@ -79,7 +84,9 @@ export class GameMap {
     }
 
     // determine currently visible tiles
-    const fov = new FOV.PreciseShadowcasting(this.lightPasses.bind(this))
+    const fov = new FOV.RecursiveShadowcasting(this.lightPasses.bind(this), {
+      topology: 8
+    })
     fov.compute(
       // centre around player
       this.player.position.x, this.player.position.y,
@@ -96,7 +103,48 @@ export class GameMap {
       })
   }
 
-  //TODO draws the map to the given display area
-  // draw(): void {
-  // }
+  // draws the map to the given display area
+  draw(display: Display, renderRect: Rect): void {
+    // offset world drawing by the player's position
+    // i.e. like a camera is following them
+    const playerMapPosition = this.player.position
+    const renderOffset = new Vector().subtract(playerMapPosition).plus(Engine.playerScreenPosition)
+
+    // render map
+    for (let y = renderRect.top; y < renderRect.bottom; ++y) {
+      for (let x = renderRect.left; x < renderRect.right; ++x) {
+        if (!this.isInMap(x - renderOffset.x, y - renderOffset.y)) {
+          continue
+        }
+
+        const tile = this.tiles[this.indexOf(x - renderOffset.x, y - renderOffset.y)]
+        // if currently visible, is lit
+        const graphic = tile.visible ? tile.lit :
+          // if seen previously, is unlit
+          tile.seen ? tile.unlit :
+            // else, is invisible
+            { fg: Colours.blank(), bg: Colours.blank() }
+        display.draw(
+          x,
+          y,
+          tile.char,
+          graphic.fg.asHex,
+          graphic.bg.asHex
+        )
+      }
+    }
+
+    // render entities
+    for (let e of this.entities) {
+      if (this.isVisible(e.position.x, e.position.y)) {
+        display.draw(
+          e.position.x + renderOffset.x,
+          e.position.y + renderOffset.y,
+          e.char,
+          e.fg,
+          e.bg
+        )
+      }
+    }
+  }
 }

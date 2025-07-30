@@ -7,7 +7,7 @@ Doing the [/r/RoguelikeDev](https://old.reddit.com/r/roguelikedev) Does The Rogu
 - [x] Part 2: Generic Entities and Map Setup
 - [x] Part 3: Dungeon Generation
 - [x] Part 4: Field of View
-- [-] Part 5: Kicking(?) Enemies and Giving Names
+- [x] Part 5: Kicking(?) Enemies and Giving Names
 - [ ] Part 6: Dealing and Taking Damage
 - [ ] Part 7: User Interface
 - [ ] Part 8: Inventory

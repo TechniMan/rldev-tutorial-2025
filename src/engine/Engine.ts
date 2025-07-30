@@ -3,7 +3,7 @@ import { GameMap } from './GameMap'
 import { RockyDesert } from '../procgen/maps'
 import Rect from '../maths/Rect'
 import Vector from '../maths/Vector'
-import * as Colours from '../maths/Colours'
+import * as Colours from '../maths/colours'
 import { BumpAction } from '../input/Action'
 
 export class Engine {
@@ -110,49 +110,16 @@ export class Engine {
     // clear display
     this.display.clear()
 
-    // offset world drawing by the player's position
-    // i.e. like a camera is following them
-    const playerMapPosition = this.map.player.position
-    const renderOffset = new Vector().subtract(playerMapPosition).plus(Engine.playerScreenPosition)
-    // render map
-    for (let y = 0; y < this.map.mapHeight; ++y) {
-      for (let x = 0; x < this.map.mapWidth; ++x) {
-        const tile = this.map.tiles[this.map.indexOf(x, y)]
-        // if currently visible, is lit
-        const graphic = tile.visible ? tile.lit :
-          // if seen previously, is unlit
-          tile.seen ? tile.unlit :
-            // else, is invisible
-            { fg: Colours.blank(), bg: Colours.blank() }
-        this.display.draw(
-          x + renderOffset.x,
-          y + renderOffset.y,
-          tile.char,
-          graphic.fg.asHex,
-          graphic.bg.asHex
-        )
-      }
-    }
-    // render entities
-    for (let e of this.map.entities) {
-      if (this.map.isVisible(e.position.x, e.position.y)) {
-        this.display.draw(
-          e.position.x + renderOffset.x,
-          e.position.y + renderOffset.y,
-          e.char,
-          e.fg,
-          e.bg
-        )
-      }
-    }
+    // draw map (first so UI etc goes on top)
+    this.map.draw(this.display, this.mapRenderRect)
 
-    // TODO render ui area (placeholder for now)
+    // render ui area (placeholder for now)
     for (let y = 0; y < this.uiRenderRect.bottom; ++y) {
       for (let x = this.uiRenderRect.left; x < this.uiRenderRect.right; ++x) {
         this.display.draw(
           x,
           y,
-          '*',
+          '-',
           Colours.uiFg().asHex,
           Colours.uiBg().asHex
         )
