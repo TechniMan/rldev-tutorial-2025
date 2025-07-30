@@ -49,8 +49,8 @@ export class GameMap {
   }
 
   isWalkable(x: number, y: number): boolean {
-    return this.tiles[this.indexOf(x, y)].walkable ||
-      this.getBlockingEntityAtLocationOrNull(x, y) !== undefined
+    return this.tiles[this.indexOf(x, y)].walkable &&
+      this.getBlockingEntityAtLocationOrNull(x, y) === undefined
   }
 
   isVisible(x: number, y: number): boolean {

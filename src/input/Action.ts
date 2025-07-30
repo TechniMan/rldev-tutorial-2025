@@ -34,11 +34,7 @@ export class MovementAction extends ActionWithDirection {
     const destX = performer.position.x + this.direction.x
     const destY = performer.position.y + this.direction.y
 
-    if (
-      gameMap.isInMap(destX, destY) &&
-      gameMap.tiles[gameMap.indexOf(destX, destY)].walkable
-      //TODO also check for blocking entities
-    ) {
+    if (gameMap.isWalkable(destX, destY)) {
       performer.move(this.direction)
     }
   }
