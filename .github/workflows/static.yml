@@ -1,0 +1,52 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  # Runs on pushes targeting the main branch
+  push:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  # checkout the code, build it with npm, then package and deploy the dist/ folder to pages
+  buildAndDeploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: NPM Install
+        run: npm ci
+      - name: NPM Build
+        run: npm run build
+      - name: Fix index
+        # use sed to read and edit the <script> line to add the .; then use awk to write and replace index with the new text
+        run: cd dist; awk -v replacement="$(sed -n '8p' index.html | sed -r 's/(.{41})/\1./')" 'NR==8 {$0=replacement} 1' index.html > temp && mv temp index.html; cd ..
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
