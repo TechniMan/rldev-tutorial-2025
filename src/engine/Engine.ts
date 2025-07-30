@@ -3,7 +3,7 @@ import { GameMap } from './GameMap'
 import { RockyDesert } from '../procgen/maps'
 import Rect from '../maths/Rect'
 import Vector from '../maths/Vector'
-import * as Colours from '../maths/colours'
+import * as Colours from '../maths/Colours'
 import { BumpAction } from '../input/Action'
 
 export class Engine {

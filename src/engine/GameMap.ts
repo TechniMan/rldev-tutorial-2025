@@ -4,7 +4,7 @@ import type Entity from '../entities/Entity'
 import { floorTile, type Tile } from './Tile'
 import Vector from '../maths/Vector'
 import { Engine } from './Engine'
-import * as Colours from '../maths/colours'
+import * as Colours from '../maths/Colours'
 import type Rect from '../maths/Rect'
 
 export class GameMap {

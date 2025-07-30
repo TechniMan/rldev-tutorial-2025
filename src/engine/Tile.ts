@@ -1,5 +1,5 @@
 import type Colour from '../maths/Colour'
-import * as Colours from '../maths/colours'
+import * as Colours from '../maths/Colours'
 
 export interface TileGraphic {
   fg: Colour
