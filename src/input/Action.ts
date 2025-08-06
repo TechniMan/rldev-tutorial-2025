@@ -1,14 +1,14 @@
 import type { GameMap } from '../engine/GameMap'
-import type Entity from '../entities/Entity'
+import type Actor from '../entities/Actor'
 import Vector from '../maths/Vector'
 
 export abstract class Action {
-  perform: (performer: Entity, gameMap: GameMap) => void = function () { }
+  perform: (performer: Actor, gameMap: GameMap) => void = function () { }
 }
 
 // Wait a turn. Do nothing.
 export class WaitAction extends Action {
-  perform = (_performer: Entity, _gameMap: GameMap) => { }
+  perform = (_performer: Actor, _gameMap: GameMap) => { }
 }
 
 export abstract class ActionWithDirection extends Action {
@@ -26,11 +26,11 @@ export abstract class ActionWithDirection extends Action {
     this._direction = direction
   }
 
-  perform = (_performer: Entity, _gameMap: GameMap) => { }
+  perform = (_performer: Actor, _gameMap: GameMap) => { }
 }
 
 export class MovementAction extends ActionWithDirection {
-  perform = (performer: Entity, gameMap: GameMap) => {
+  perform = (performer: Actor, gameMap: GameMap) => {
     const destX = performer.position.x + this.direction.x
     const destY = performer.position.y + this.direction.y
 
@@ -40,14 +40,25 @@ export class MovementAction extends ActionWithDirection {
   }
 }
 
+export class MeleeAttackAction extends ActionWithDirection {
+  perform = (performer: Actor, gameMap: GameMap) => {
+    const destX = performer.position.x + this.direction.x
+    const destY = performer.position.y + this.direction.y
+    const target = gameMap.getBlockingEntityAtLocation(destX, destY) as Actor
+
+    const alive = target.fighter.damage(performer.fighter.power)
+    const extra = alive ? '' : ' They died!'
+    console.log(`${performer.name} attacked ${target.name} with ${performer.fighter.power} power!${extra}`)
+  }
+}
+
 export class BumpAction extends ActionWithDirection {
-  perform = (performer: Entity, gameMap: GameMap) => {
+  perform = (performer: Actor, gameMap: GameMap) => {
     const destX = performer.position.x + this.direction.x
     const destY = performer.position.y + this.direction.y
 
     if (gameMap.getBlockingEntityAtLocation(destX, destY)) {
-      //TODO return new MeleeAttackAction(this.direction).perform(performer as Actor, gameMap)
-      console.log('Bumped into an entity!')
+      return new MeleeAttackAction(this.direction).perform(performer as Actor, gameMap)
     } else {
       return new MovementAction(this.direction).perform(performer, gameMap)
     }

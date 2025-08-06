@@ -10,7 +10,8 @@ export function spawnPlayer(
     '@',
     Colours.entityFg().asHex,
     Colours.planetBrightBg().asHex,
-    'Player'
+    'Player',
+    [30, 2, 5]
   )
 }
 
@@ -22,7 +23,8 @@ export function spawnBugling(
     'b',
     Colours.entityFg().asHex,
     Colours.planetBrightBg().asHex,
-    'Bugling'
+    'Bugling',
+    [10, 0, 3]
   )
 }
 
@@ -34,6 +36,7 @@ export function spawnBug(
     'B',
     Colours.entityFg().asHex,
     Colours.planetBrightBg().asHex,
-    'Bug'
+    'Bug',
+    [16, 1, 4]
   )
 }

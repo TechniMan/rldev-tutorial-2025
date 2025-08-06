@@ -1,8 +1,11 @@
 import type Vector from '../maths/Vector'
+import { Fighter } from './components'
 import Entity from './Entity'
 import RenderOrder from './RenderOrder'
 
 export default class Actor extends Entity {
+  public fighter: Fighter
+
   constructor(
     public position: Vector,
     public char: string,
@@ -10,11 +13,12 @@ export default class Actor extends Entity {
     public bg: string = '#000',
     public name: string = '<Unnamed Entity>',
     //TODO public ai: BaseAI | null,
-    //TODO public fighter: Fighter,
+    fighterStats: Array<number>,
     //TODO public inventory: Inventory,
     //TODO public level: Level
   ) {
     super(position, char, fg, bg, name, true, RenderOrder.Actor)
+    this.fighter = new Fighter(fighterStats[0], fighterStats[1], fighterStats[2], this)
   }
 
   public get isAlive(): boolean {
