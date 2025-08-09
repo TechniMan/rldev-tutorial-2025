@@ -1,5 +1,6 @@
 import { Engine } from './engine/Engine.ts'
 import './extensions/Array.ts'
+import './extensions/Display.ts'
 
 declare global {
   interface Window {

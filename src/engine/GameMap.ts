@@ -108,7 +108,7 @@ export class GameMap {
     // offset world drawing by the player's position
     // i.e. like a camera is following them
     const playerMapPosition = this.player.position
-    const renderOffset = new Vector().subtract(playerMapPosition).plus(Engine.playerScreenPosition)
+    const renderOffset = new Vector().minus(playerMapPosition).plus(Engine.playerScreenPosition)
 
     // render map
     for (let y = renderRect.top; y < renderRect.bottom; ++y) {

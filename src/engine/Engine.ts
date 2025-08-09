@@ -35,14 +35,18 @@ export class Engine {
 
     //TODO message log
 
+    // trigger initial render
+    this.screen = new GameScreen(this.display)
+
     // add keydown listener
     window.addEventListener('keydown', (ev) => {
       this.update(ev)
     })
-    //TODO add mousemove listener
-
-    // trigger initial render
-    this.screen = new GameScreen(this.display)
+    // add mousemove listener
+    window.addEventListener('mousemove', (ev) => {
+      this.screen.updateMousePos(Vector.fromArray(this.display.eventToPosition(ev)))
+      this.screen.render()
+    })
   }
 
   update(event: KeyboardEvent) {

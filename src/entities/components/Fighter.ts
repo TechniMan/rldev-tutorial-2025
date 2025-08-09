@@ -12,6 +12,14 @@ export class Fighter extends BaseComponent {
     return this._currentHp
   }
 
+  public get maxHp(): number {
+    return this._maxHp
+  }
+
+  public get percentageHp(): number {
+    return this._currentHp / this._maxHp
+  }
+
   public get isAlive(): boolean {
     return this._currentHp > 0
   }

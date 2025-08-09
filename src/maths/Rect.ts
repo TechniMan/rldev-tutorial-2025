@@ -19,11 +19,19 @@ export default class Rect {
     return this._h
   }
 
+
   constructor(x: number, y: number, w: number, h: number) {
     this._x = x
     this._y = y
     this._w = w
     this._h = h
+  }
+
+  public get centre(): Vector {
+    return new Vector(
+      this.w / 2,
+      this.h / 2
+    )
   }
 
   public get position(): Vector {

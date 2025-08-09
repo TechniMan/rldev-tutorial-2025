@@ -38,7 +38,7 @@ export function floorTile(): Tile {
   return new Tile(
     true,
     true,
-    '.',
+    ' ',
     {
       bg: Colours.planetDarkBg(),
       fg: Colours.planetDarkFg()

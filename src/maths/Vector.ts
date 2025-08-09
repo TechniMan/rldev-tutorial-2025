@@ -17,11 +17,15 @@ export default class Vector {
     this._y = y
   }
 
+  public static fromArray(arr: Array<number>): Vector {
+    return new Vector(arr[0], arr[1])
+  }
+
   plus(other: Vector): Vector {
     return new Vector(this.x + other.x, this.y + other.y)
   }
 
-  subtract(other: Vector): Vector {
+  minus(other: Vector): Vector {
     return new Vector(this.x - other.x, this.y - other.y)
   }
 
