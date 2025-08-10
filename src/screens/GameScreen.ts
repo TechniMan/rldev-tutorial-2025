@@ -130,7 +130,7 @@ export class GameScreen extends BaseScreen {
     this.display.drawColouredBar(uiX + 1, uiY, barWidth, Colours.brightGreen().asHex)
     // health text
     let barText = `${this.player.fighter.currentHp}/${this.player.fighter.maxHp}`
-    this.display.drawTextOver(uiX + 1, uiY, Colours.black().asHex, barText)
+    this.display.drawTextOver(uiX + 1, uiY, barText, Colours.black().asHex)
     uiY += 1
 
     uiY += 1
@@ -140,18 +140,18 @@ export class GameScreen extends BaseScreen {
       this.display.drawFrameWithTitle(
         uiX, uiY, uiW, 4,
         this.currentlyHighlightedEnemy.name,
-        Colours.dimRed().asHex
+        Colours.brightRed().asHex
       )
       // health bar
       uiY += 1
-      this.display.drawTextOver(uiX + 1, uiY, 'Health:', Colours.dimRed().asHex)
+      this.display.drawTextOver(uiX + 1, uiY, 'Health:', Colours.brightRed().asHex)
       uiY += 1
       barWidth = Math.floor(this.currentlyHighlightedEnemy.fighter.percentageHp * (uiW - 2))
-      this.display.drawColouredBar(uiX + 1, uiY, uiW - 2, Colours.dimGreen().asHex)
+      this.display.drawColouredBar(uiX + 1, uiY, uiW - 2, Colours.dimRed().asHex)
       this.display.drawColouredBar(uiX + 1, uiY, barWidth, Colours.brightRed().asHex)
       // health text
       barText = `${this.currentlyHighlightedEnemy.fighter.currentHp}/${this.currentlyHighlightedEnemy.fighter.maxHp}`
-      this.display.drawTextOver(uiX + 1, uiY, Colours.black().asHex, barText)
+      this.display.drawTextOver(uiX + 1, uiY, barText, Colours.black().asHex)
       uiY += 1
     }
 
