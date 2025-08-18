@@ -8,12 +8,16 @@ import * as Colours from '../maths/Colours'
 import Rect from '../maths/Rect'
 import { Engine } from '../engine/Engine'
 import type Actor from '../entities/Actor'
+import MessageLog from '../engine/MessageLog'
 
 export class GameScreen extends BaseScreen {
   gameMap: GameMap
+  messageLog: MessageLog
+
   // render areas
   mapRenderRect: Rect
   uiRenderRect: Rect
+  msgRenderRect: Rect
 
   currentlyHighlightedEnemy?: Actor
 
@@ -28,6 +32,7 @@ export class GameScreen extends BaseScreen {
     this.gameMap = map
 
     //TODO init inputhandler
+    this.messageLog = new MessageLog()
 
     // let's get ready to rendeeeer!
     this.mapRenderRect = new Rect(
@@ -38,6 +43,9 @@ export class GameScreen extends BaseScreen {
       this.mapRenderRect.right, 0,
       16, Engine.SCREEN_HEIGHT
     )
+    this.msgRenderRect = new Rect(0, 0, 0, 0)
+
+    // initial update/draw
     this.update(null)
   }
 
@@ -83,7 +91,7 @@ export class GameScreen extends BaseScreen {
         movement.y
       ))
       // have the player perform it
-      action.perform(this.player, this.gameMap)
+      action.perform(this.player, this.gameMap, this.messageLog)
     }
 
     // update fov in map
@@ -152,15 +160,22 @@ export class GameScreen extends BaseScreen {
       // health text
       barText = `${this.currentlyHighlightedEnemy.fighter.currentHp}/${this.currentlyHighlightedEnemy.fighter.maxHp}`
       this.display.drawTextOver(uiX + 1, uiY, barText, Colours.black().asHex)
-      uiY += 1
+      uiY += 2
     }
-
-    uiY += 1
 
     // messages frame
     this.display.drawFrameWithTitle(
       uiX, uiY, uiW, uiH - uiY,
       'Messages'
+    )
+    this.msgRenderRect = new Rect(
+      uiX + 1, uiY + 1,
+      uiW - 2, uiH - uiY - 2
+    )
+    console.log(this.msgRenderRect)
+    this.messageLog.draw(
+      this.display,
+      this.msgRenderRect
     )
   }
 }
