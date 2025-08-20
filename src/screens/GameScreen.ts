@@ -37,11 +37,11 @@ export class GameScreen extends BaseScreen {
     // let's get ready to rendeeeer!
     this.mapRenderRect = new Rect(
       0, 0,
-      Engine.SCREEN_WIDTH - 16, Engine.SCREEN_HEIGHT
+      Engine.SCREEN_WIDTH - 16, Engine.SCREEN_HEIGHT - 16
     )
     this.uiRenderRect = new Rect(
       this.mapRenderRect.right, 0,
-      16, Engine.SCREEN_HEIGHT
+      16, Engine.SCREEN_HEIGHT - 16
     )
     this.msgRenderRect = new Rect(0, 0, 0, 0)
 
@@ -126,22 +126,36 @@ export class GameScreen extends BaseScreen {
 
     // player frame
     this.display.drawFrameWithTitle(
-      uiX, uiY, uiW, 4,
+      uiX, uiY, uiW, 12,
       'Player'
     )
-    // health bar
     uiY += 1
+
+    // health bar
     this.display.drawText(uiX + 1, uiY, 'Health:')
     uiY += 1
     let barWidth = Math.floor(this.player.fighter.percentageHp * (uiW - 2))
     this.display.drawColouredBar(uiX + 1, uiY, uiW - 2, Colours.dimRed().asHex)
     this.display.drawColouredBar(uiX + 1, uiY, barWidth, Colours.brightGreen().asHex)
-    // health text
     let barText = `${this.player.fighter.currentHp}/${this.player.fighter.maxHp}`
     this.display.drawTextOver(uiX + 1, uiY, barText, Colours.black().asHex)
-    uiY += 1
+    uiY += 2
 
+    // weapon stats
+    this.display.drawText(uiX + 1, uiY, 'Weapon:')
     uiY += 1
+    this.display.drawText(uiX + 1, uiY, 'Gun')
+    uiY += 2
+    this.display.drawText(uiX + 1, uiY, 'Ammunition:')
+    uiY += 1
+    barWidth = Math.floor(0.67 * (uiW - 2))
+    this.display.drawColouredBar(uiX + 1, uiY, uiW - 2, Colours.dimRed().asHex)
+    this.display.drawColouredBar(uiX + 1, uiY, barWidth, Colours.brightGreen().asHex)
+    uiY += 2
+    this.display.drawText(uiX + 1, uiY, 'Magazines:' + '3'.padStart(4))
+    uiY += 2
+
+    uiY += 2
 
     // enemy frame
     if (this.currentlyHighlightedEnemy) {
@@ -165,12 +179,13 @@ export class GameScreen extends BaseScreen {
 
     // messages frame
     this.display.drawFrameWithTitle(
-      uiX, uiY, uiW, uiH - uiY,
+      0, Engine.MAP_HEIGHT,
+      Engine.SCREEN_WIDTH, Engine.SCREEN_HEIGHT - Engine.MAP_HEIGHT,
       'Messages'
     )
     this.msgRenderRect = new Rect(
-      uiX + 1, uiY + 1,
-      uiW - 2, uiH - uiY - 2
+      1, Engine.MAP_HEIGHT + 1,
+      Engine.SCREEN_WIDTH - 2, Engine.SCREEN_HEIGHT - Engine.MAP_HEIGHT - 2
     )
     console.log(this.msgRenderRect)
     this.messageLog.draw(

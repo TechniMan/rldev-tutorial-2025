@@ -7,9 +7,10 @@ import { GameScreen } from '../screens/GameScreen'
 export class Engine {
   // constants
   public static readonly SCREEN_WIDTH = 64
-  public static readonly SCREEN_HEIGHT = 48
-  public static readonly SCREEN_HEIGHT_HALF = 24
-  public static readonly playerScreenPosition = new Vector(Engine.SCREEN_HEIGHT_HALF, Engine.SCREEN_HEIGHT_HALF)
+  public static readonly SCREEN_HEIGHT = 64
+  public static readonly MAP_HEIGHT = 48
+  public static readonly MAP_HEIGHT_HALF = 24
+  public static readonly playerScreenPosition = new Vector(Engine.MAP_HEIGHT_HALF, Engine.MAP_HEIGHT_HALF)
 
   public static lightBlue = 'lightblue'
   public static darkBlue = 'blue'
