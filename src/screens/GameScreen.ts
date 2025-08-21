@@ -33,6 +33,7 @@ export class GameScreen extends BaseScreen {
 
     //TODO init inputhandler
     this.messageLog = new MessageLog()
+    this.messageLog.post('Welcome! Use the numpad keys to move.')
 
     // let's get ready to rendeeeer!
     this.mapRenderRect = new Rect(
