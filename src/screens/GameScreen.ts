@@ -122,11 +122,11 @@ export class GameScreen extends BaseScreen {
     let uiX = this.uiRenderRect.left
     let uiY = this.uiRenderRect.top
     const uiW = this.uiRenderRect.size.x
-    const uiH = this.uiRenderRect.size.y
+    // const uiH = this.uiRenderRect.size.y
 
     // player frame
     this.display.drawFrameWithTitle(
-      uiX, uiY, uiW, 12,
+      uiX, uiY, uiW, 15,
       'Player'
     )
     uiY += 1
@@ -154,16 +154,22 @@ export class GameScreen extends BaseScreen {
     uiY += 2
     this.display.drawText(uiX + 1, uiY, 'Magazines:' + '3'.padStart(4))
     uiY += 2
+    this.display.drawText(uiX + 1, uiY, 'Accuracy:')
+    uiY += 1
+    barWidth = Math.floor(0.67 * (uiW - 2))
+    this.display.drawColouredBar(uiX + 1, uiY, uiW - 2, Colours.dimRed().asHex)
+    this.display.drawColouredBar(uiX + 1, uiY, barWidth, Colours.brightGreen().asHex)
+    uiY += 1
 
-    uiY += 2
+    uiY = 48 - 4
 
     // enemy frame
+    this.display.drawFrameWithTitle(
+      uiX, uiY, uiW, 4,
+      this.currentlyHighlightedEnemy?.name || 'Enemy',
+      Colours.brightRed().asHex
+    )
     if (this.currentlyHighlightedEnemy) {
-      this.display.drawFrameWithTitle(
-        uiX, uiY, uiW, 4,
-        this.currentlyHighlightedEnemy.name,
-        Colours.brightRed().asHex
-      )
       // health bar
       uiY += 1
       this.display.drawTextOver(uiX + 1, uiY, 'Health:', Colours.brightRed().asHex)
