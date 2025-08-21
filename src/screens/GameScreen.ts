@@ -3,7 +3,7 @@ import { BaseScreen } from './BaseScreen'
 import type { GameMap } from '../engine/GameMap'
 import { RockyDesert } from '../procgen/maps'
 import Vector from '../maths/Vector'
-import { BumpAction } from '../input/Action'
+import { Action, BumpAction, WaitAction } from '../input/Action'
 import * as Colours from '../maths/Colours'
 import Rect from '../maths/Rect'
 import { Engine } from '../engine/Engine'
@@ -50,10 +50,17 @@ export class GameScreen extends BaseScreen {
     this.update(null)
   }
 
+  handleEnemyTurns() {
+    this.gameMap.livingActors.forEach(a => {
+      a.ai?.perform(a, this.gameMap, this.messageLog)
+    })
+  }
+
   update(event: KeyboardEvent | null): BaseScreen {
     //TODO use inputHandler to determine appropriate action
     // update player position from movement
     let movement = { x: 0, y: 0 }
+    let dontAct = false
     switch (event?.key) {
       case '8':
         movement.y = -1
@@ -83,16 +90,31 @@ export class GameScreen extends BaseScreen {
         movement.x = -1
         movement.y = 1
         break
+      case '5':
+        // already at 0
+        break
+      default:
+        dontAct = true
+        break
     }
 
-    // create the relevant action
-    if (movement.x || movement.y) {
-      const action = new BumpAction(new Vector(
-        movement.x,
-        movement.y
-      ))
+    // if acting
+    if (!dontAct) {
+      // create the relevant action
+      let action: Action
+      if (movement.x || movement.y) {
+        action = new BumpAction(new Vector(
+          movement.x,
+          movement.y
+        ))
+      } else {
+        action = new WaitAction()
+      }
       // have the player perform it
-      action.perform(this.player, this.gameMap, this.messageLog)
+      if (this.player.isAlive) {
+        action.perform(this.player, this.gameMap, this.messageLog)
+      }
+      this.handleEnemyTurns()
     }
 
     // update fov in map
@@ -194,7 +216,6 @@ export class GameScreen extends BaseScreen {
       1, Engine.MAP_HEIGHT + 1,
       Engine.SCREEN_WIDTH - 2, Engine.SCREEN_HEIGHT - Engine.MAP_HEIGHT - 2
     )
-    console.log(this.msgRenderRect)
     this.messageLog.draw(
       this.display,
       this.msgRenderRect

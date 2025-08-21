@@ -60,8 +60,12 @@ export class MeleeAttackAction extends ActionWithDirection {
     const target = gameMap.getBlockingEntityAtLocation(destX, destY) as Actor
 
     const alive = target.fighter.damage(performer.fighter.power)
-    const extra = alive ? '' : ' They died!'
-    messageLog.post(`${performer.name} attacked ${target.name} with ${performer.fighter.power} power!${extra}`)
+    const extra = alive ? '' : ' and they died!'
+    messageLog.post(`${performer.name} attacked ${target.name}${extra}`)
+    // kill the actor after the message, else it will say we 'attacked remains of bug'
+    if (!alive) {
+      target.die()
+    }
   }
 }
 

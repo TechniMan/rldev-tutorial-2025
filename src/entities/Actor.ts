@@ -1,7 +1,9 @@
 import type Vector from '../maths/Vector'
 import { Fighter } from './components'
+import type { BaseAI } from './components/AI'
 import Entity from './Entity'
 import RenderOrder from './RenderOrder'
+import * as Colours from '../maths/Colours'
 
 export default class Actor extends Entity {
   public fighter: Fighter
@@ -12,7 +14,7 @@ export default class Actor extends Entity {
     public fg: string = '#fff',
     public bg: string = '#000',
     public name: string = '<Unnamed Entity>',
-    //TODO public ai: BaseAI | null,
+    public ai: BaseAI | null,
     fighterStats: Array<number>,
     //TODO public inventory: Inventory,
     //TODO public level: Level
@@ -22,7 +24,29 @@ export default class Actor extends Entity {
   }
 
   public get isAlive(): boolean {
-    return true
+    return this.fighter.isAlive
     //TODO return !!this.ai || window.engine.player === this
+  }
+
+  public get isPlayer(): boolean {
+    return this.name === 'Player'
+  }
+
+  public die(): string {
+    let deathMessage = ''
+    if (this.isPlayer) {
+      deathMessage = 'You died!'
+    } else {
+      deathMessage = `${this.name} has died.`
+    }
+
+    this.char = '%'
+    this.fg = Colours.brightRed().asHex
+    this.blocksMovement = false
+    this.ai = null
+    this.name = `Remains of ${this.name}`
+    this.renderOrder = RenderOrder.Corpse
+
+    return deathMessage
   }
 }

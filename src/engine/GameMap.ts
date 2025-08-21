@@ -1,5 +1,5 @@
 import { Display, FOV } from 'rot-js'
-import type Actor from '../entities/Actor'
+import Actor from '../entities/Actor'
 import type Entity from '../entities/Entity'
 import { floorTile, type Tile } from './Tile'
 import Vector from '../maths/Vector'
@@ -28,6 +28,16 @@ export class GameMap {
   }
   public get entities(): Entity[] {
     return this._entities
+  }
+
+  public get livingActors(): Actor[] {
+    return this._entities.filter(e => {
+      return (
+        // is it an actor, is it alive
+        e instanceof Actor &&
+        (e as Actor).isAlive
+      )
+    }).map(e => e as Actor)
   }
 
   constructor(w: number, h: number, p: Actor) {
@@ -90,15 +100,15 @@ export class GameMap {
     fov.compute(
       // centre around player
       this.player.position.x, this.player.position.y,
-      // fov range of 16
-      16,
+      // fov range of 20
+      20,
       // r is radius from player, v is visibility in range [0, 1]
       (x, y, _r, v) => {
         // if visible, mark as so
         if (v) {
           this.tiles[this.indexOf(x, y)].visible = true
           this.tiles[this.indexOf(x, y)].seen = true
-          this.tiles[this.indexOf(x, y)].visibility = v // r / 16.0
+          this.tiles[this.indexOf(x, y)].visibility = v // r / 20.0
         }
       })
   }
@@ -135,7 +145,7 @@ export class GameMap {
     }
 
     // render entities
-    for (let e of this.entities) {
+    for (let e of this.entities.sort((a, b) => a.renderOrder - b.renderOrder)) {
       if (this.isVisible(e.position.x, e.position.y)) {
         display.draw(
           e.position.x + renderOffset.x,
