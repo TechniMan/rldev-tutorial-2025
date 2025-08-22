@@ -1,7 +1,7 @@
 import type Vector from '../maths/Vector'
 import Actor from './Actor'
 import * as Colours from '../maths/Colours'
-import { HostileEnemy } from './components/AI'
+import { HostileEnemy } from './components/ai/HostileEnemy'
 
 export function spawnPlayer(
   position: Vector

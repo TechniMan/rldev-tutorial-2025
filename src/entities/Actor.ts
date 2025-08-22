@@ -1,6 +1,6 @@
 import type Vector from '../maths/Vector'
 import { Fighter } from './components'
-import type { BaseAI } from './components/AI'
+import type { BaseAI } from './components/ai/BaseAI'
 import Entity from './Entity'
 import RenderOrder from './RenderOrder'
 import * as Colours from '../maths/Colours'
