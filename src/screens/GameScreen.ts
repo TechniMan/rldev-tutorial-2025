@@ -3,12 +3,13 @@ import { BaseScreen } from './BaseScreen'
 import type { GameMap } from '../engine/GameMap'
 import { RockyDesert } from '../procgen/maps'
 import Vector from '../maths/Vector'
-import { Action, BumpAction, WaitAction } from '../input/Action'
+import { Action, BumpAction, RangedAttackAction, WaitAction } from '../input/Action'
 import * as Colours from '../maths/Colours'
 import Rect from '../maths/Rect'
 import { Engine } from '../engine/Engine'
 import type Actor from '../entities/Actor'
 import MessageLog from '../engine/MessageLog'
+import MouseButton from '../input/MouseButton'
 
 export class GameScreen extends BaseScreen {
   gameMap: GameMap
@@ -33,7 +34,7 @@ export class GameScreen extends BaseScreen {
 
     //TODO init inputhandler
     this.messageLog = new MessageLog()
-    this.messageLog.post('Welcome! Use the numpad keys to move.')
+    this.messageLog.post('Welcome! Use the numpad keys to move (inc. 5 to wait), and click an enemy to shoot them.')
 
     // let's get ready to rendeeeer!
     this.mapRenderRect = new Rect(
@@ -126,13 +127,31 @@ export class GameScreen extends BaseScreen {
     return this
   }
 
-  updateMousePos(mousePos: Vector): void {
+  onMouseMove(mousePos: Vector): void {
     const checkPos = mousePos.minus(this.mapRenderRect.centre).plus(this.player.position)
     const e = this.gameMap.getBlockingEntityAtLocation(
       checkPos.x,
       checkPos.y
     )
     this.currentlyHighlightedEnemy = e && e.name !== this.player.name ? e as Actor : undefined
+  }
+
+  onMouseClick(mb: MouseButton): void {
+    // if we're hovering on an enemy and click with our primary mouse button
+    if (this.currentlyHighlightedEnemy && mb === MouseButton.Main) {
+      // fire!
+      new RangedAttackAction(
+        this.currentlyHighlightedEnemy.position.minus(this.player.position)
+      ).perform(
+        this.player,
+        this.gameMap,
+        this.messageLog
+      )
+      // and give the enemies a turn
+      this.handleEnemyTurns()
+      this.gameMap.updateFov()
+      this.render()
+    }
   }
 
   render(): void {

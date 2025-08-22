@@ -3,6 +3,7 @@ import Vector from '../maths/Vector'
 import * as Colours from '../maths/Colours'
 import type { BaseScreen } from '../screens/BaseScreen'
 import { GameScreen } from '../screens/GameScreen'
+import MouseButton from '../input/MouseButton'
 
 export class Engine {
   // constants
@@ -45,13 +46,16 @@ export class Engine {
     })
     // add mousemove listener
     window.addEventListener('mousemove', (ev) => {
-      this.screen.updateMousePos(Vector.fromArray(this.display.eventToPosition(ev)))
+      this.screen.onMouseMove(Vector.fromArray(this.display.eventToPosition(ev)))
       this.screen.render()
+    })
+    window.addEventListener('mousedown', (ev) => {
+      this.screen.onMouseClick(ev.button as MouseButton)
+      // this.screen.render()
     })
   }
 
   update(event: KeyboardEvent) {
     this.screen = this.screen.update(event)
-    this.screen.render()
   }
 }

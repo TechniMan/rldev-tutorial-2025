@@ -1,6 +1,7 @@
 import type { Display } from 'rot-js'
 import type Actor from '../entities/Actor'
 import Vector from '../maths/Vector'
+import type MouseButton from '../input/MouseButton'
 
 export abstract class BaseScreen {
   // abstract inputHandler: BaseInputHandler
@@ -14,6 +15,7 @@ export abstract class BaseScreen {
   }
 
   abstract update(event: KeyboardEvent): BaseScreen
-  abstract updateMousePos(m: Vector): void
+  abstract onMouseMove(m: Vector): void
+  abstract onMouseClick(mb: MouseButton): void
   abstract render(): void
 }

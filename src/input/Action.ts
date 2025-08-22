@@ -61,7 +61,23 @@ export class MeleeAttackAction extends ActionWithDirection {
 
     const alive = target.fighter.damage(performer.fighter.power)
     const extra = alive ? '' : ' and they died!'
-    messageLog.post(`${performer.name} attacked ${target.name}${extra}`)
+    messageLog.post(`${performer.name} hit ${target.name}${extra}`)
+    // kill the actor after the message, else it will say we 'attacked remains of bug'
+    if (!alive) {
+      target.die()
+    }
+  }
+}
+
+export class RangedAttackAction extends ActionWithDirection {
+  perform = (performer: Actor, gameMap: GameMap, messageLog: MessageLog) => {
+    const destX = performer.position.x + this.direction.x
+    const destY = performer.position.y + this.direction.y
+    const target = gameMap.getBlockingEntityAtLocation(destX, destY) as Actor
+
+    const alive = target.fighter.damage(performer.fighter.power)
+    const extra = alive ? '' : ' and they died!'
+    messageLog.post(`${performer.name} shot ${target.name}${extra}`)
     // kill the actor after the message, else it will say we 'attacked remains of bug'
     if (!alive) {
       target.die()
