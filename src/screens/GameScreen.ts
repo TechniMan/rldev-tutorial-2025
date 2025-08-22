@@ -150,7 +150,6 @@ export class GameScreen extends BaseScreen {
       // and give the enemies a turn
       this.handleEnemyTurns()
       this.gameMap.updateFov()
-      this.render()
     }
   }
 
@@ -190,11 +189,11 @@ export class GameScreen extends BaseScreen {
     uiY += 2
     this.display.drawText(uiX + 1, uiY, 'Ammunition:')
     uiY += 1
-    barWidth = Math.floor(0.67 * (uiW - 2))
+    barWidth = Math.floor(this.player.inventory!.ammoPercentage * (uiW - 2))
     this.display.drawColouredBar(uiX + 1, uiY, uiW - 2, Colours.dimRed().asHex)
     this.display.drawColouredBar(uiX + 1, uiY, barWidth, Colours.brightGreen().asHex)
     uiY += 2
-    this.display.drawText(uiX + 1, uiY, 'Magazines:' + '3'.padStart(4))
+    this.display.drawText(uiX + 1, uiY, `Magazines: ${this.player.inventory!.magazineCurrent}/${this.player.inventory!.magazineMax}`)
     uiY += 2
     this.display.drawText(uiX + 1, uiY, 'Accuracy:')
     uiY += 1

@@ -1,5 +1,5 @@
 import type Vector from '../maths/Vector'
-import { Fighter } from './components'
+import { Fighter, Inventory } from './components'
 import type { BaseAI } from './components/ai/BaseAI'
 import Entity from './Entity'
 import RenderOrder from './RenderOrder'
@@ -16,7 +16,7 @@ export default class Actor extends Entity {
     public name: string = '<Unnamed Entity>',
     public ai: BaseAI | null,
     fighterStats: Array<number>,
-    //TODO public inventory: Inventory,
+    public inventory: Inventory | null,
     //TODO public level: Level
   ) {
     super(position, char, fg, bg, name, true, RenderOrder.Actor)

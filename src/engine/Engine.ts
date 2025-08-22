@@ -51,7 +51,7 @@ export class Engine {
     })
     window.addEventListener('mousedown', (ev) => {
       this.screen.onMouseClick(ev.button as MouseButton)
-      // this.screen.render()
+      this.screen.render()
     })
   }
 

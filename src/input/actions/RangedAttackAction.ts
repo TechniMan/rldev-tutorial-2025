@@ -5,6 +5,12 @@ import { BaseActionWithDirection } from './BaseActionWithDirection'
 
 export class RangedAttackAction extends BaseActionWithDirection {
   perform = (performer: Actor, gameMap: GameMap, messageLog: MessageLog) => {
+    // can we fire?
+    if (!performer.inventory?.attemptToFire()) {
+      messageLog.post(`${performer.name} attempted to fire their weapon, but couldn't!`)
+      return
+    }
+
     const destX = performer.position.x + this.direction.x
     const destY = performer.position.y + this.direction.y
     const target = gameMap.getBlockingEntityAtLocation(destX, destY) as Actor
