@@ -1,11 +1,11 @@
 import { Path } from 'rot-js'
 import type { GameMap } from '../../../engine/GameMap'
 import type MessageLog from '../../../engine/MessageLog'
-import { type Action } from '../../../input/Action'
+import { type BaseAction } from '../../../input/actions/BaseAction'
 import Vector from '../../../maths/Vector'
 import type Actor from '../../Actor'
 
-export abstract class BaseAI implements Action {
+export abstract class BaseAI implements BaseAction {
   path: Vector[]
 
   protected constructor() {

@@ -3,7 +3,7 @@ import { BaseScreen } from './BaseScreen'
 import type { GameMap } from '../engine/GameMap'
 import { RockyDesert } from '../procgen/maps'
 import Vector from '../maths/Vector'
-import { Action, BumpAction, RangedAttackAction, WaitAction } from '../input/Action'
+import { BaseAction, BumpAction, RangedAttackAction, WaitAction } from '../input/actions/'
 import * as Colours from '../maths/Colours'
 import Rect from '../maths/Rect'
 import { Engine } from '../engine/Engine'
@@ -102,7 +102,7 @@ export class GameScreen extends BaseScreen {
     // if acting
     if (!dontAct) {
       // create the relevant action
-      let action: Action
+      let action: BaseAction
       if (movement.x || movement.y) {
         action = new BumpAction(new Vector(
           movement.x,

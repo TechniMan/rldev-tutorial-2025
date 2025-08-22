@@ -1,6 +1,6 @@
 import type { GameMap } from '../../../engine/GameMap'
 import type MessageLog from '../../../engine/MessageLog'
-import { MeleeAttackAction, MovementAction, WaitAction } from '../../../input/Action'
+import { MeleeAttackAction, MovementAction, WaitAction } from '../../../input/actions'
 import Vector from '../../../maths/Vector'
 import type Actor from '../../Actor'
 import { BaseAI } from './BaseAI'
@@ -46,6 +46,6 @@ export class HostileEnemy extends BaseAI {
     // finally, if player location is unknown and we have nowhere to go,
     //  just hang and chill
     return new WaitAction(
-    ).perform(self, gameMap, _messageLog)
+    ).perform()
   }
 }
