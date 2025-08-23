@@ -45,6 +45,7 @@ export class Inventory extends BaseComponent {
   public attemptToReload(): boolean {
     if (this.magazineCurrent) {
       this._magazineCurrent -= 1
+      this._ammoCurrent = this._ammoMax
       return true
     }
     return false

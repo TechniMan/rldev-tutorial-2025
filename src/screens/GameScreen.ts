@@ -3,17 +3,18 @@ import { BaseScreen } from './BaseScreen'
 import type { GameMap } from '../engine/GameMap'
 import { RockyDesert } from '../procgen/maps'
 import Vector from '../maths/Vector'
-import { BaseAction, BumpAction, RangedAttackAction, WaitAction } from '../input/actions/'
 import * as Colours from '../maths/Colours'
 import Rect from '../maths/Rect'
 import { Engine } from '../engine/Engine'
 import type Actor from '../entities/Actor'
 import MessageLog from '../engine/MessageLog'
 import MouseButton from '../input/MouseButton'
+import { GameInputHandler, type BaseInputHandler } from '../input/BaseInputHandler'
 
 export class GameScreen extends BaseScreen {
   gameMap: GameMap
   messageLog: MessageLog
+  inputHandler: BaseInputHandler
 
   // render areas
   mapRenderRect: Rect
@@ -32,7 +33,7 @@ export class GameScreen extends BaseScreen {
     super(display, map.player)
     this.gameMap = map
 
-    //TODO init inputhandler
+    this.inputHandler = new GameInputHandler()
     this.messageLog = new MessageLog()
     this.messageLog.post('Welcome! Use the numpad keys to move (inc. 5 to wait), and click an enemy to shoot them.')
 
@@ -48,7 +49,8 @@ export class GameScreen extends BaseScreen {
     this.msgRenderRect = new Rect(0, 0, 0, 0)
 
     // initial update/draw
-    this.update(null)
+    this.gameMap.updateFov()
+    this.render()
   }
 
   handleEnemyTurns() {
@@ -58,68 +60,19 @@ export class GameScreen extends BaseScreen {
   }
 
   update(event: KeyboardEvent | null): BaseScreen {
-    //TODO use inputHandler to determine appropriate action
-    // update player position from movement
-    let movement = { x: 0, y: 0 }
-    let dontAct = false
-    switch (event?.key) {
-      case '8':
-        movement.y = -1
-        break
-      case '2':
-        movement.y = 1
-        break
-      case '4':
-        movement.x = -1
-        break
-      case '6':
-        movement.x = 1
-        break
-      case '7':
-        movement.x = -1
-        movement.y = -1
-        break
-      case '9':
-        movement.x = 1
-        movement.y = -1
-        break
-      case '3':
-        movement.x = 1
-        movement.y = 1
-        break
-      case '1':
-        movement.x = -1
-        movement.y = 1
-        break
-      case '5':
-        // already at 0
-        break
-      default:
-        dontAct = true
-        break
-    }
+    if (event) {
+      const action = this.inputHandler.onKeyPress(event, this.player)
 
-    // if acting
-    if (!dontAct) {
-      // create the relevant action
-      let action: BaseAction
-      if (movement.x || movement.y) {
-        action = new BumpAction(new Vector(
-          movement.x,
-          movement.y
-        ))
-      } else {
-        action = new WaitAction()
-      }
-      // have the player perform it
-      if (this.player.isAlive) {
+      // if acting
+      if (action) {
+        // have the player perform it
         action.perform(this.player, this.gameMap, this.messageLog)
+        this.handleEnemyTurns()
+        this.gameMap.updateFov()
       }
-      this.handleEnemyTurns()
     }
 
-    // update fov in map
-    this.gameMap.updateFov()
+    // this.inputHandler = this.inputHandler.nextHandler
 
     // update the screen
     this.render()
@@ -129,6 +82,8 @@ export class GameScreen extends BaseScreen {
 
   onMouseMove(mousePos: Vector): void {
     const checkPos = mousePos.minus(this.mapRenderRect.centre).plus(this.player.position)
+    this.inputHandler.onMouseMove(mousePos, checkPos)
+
     const e = this.gameMap.getBlockingEntityAtLocation(
       checkPos.x,
       checkPos.y
@@ -137,20 +92,20 @@ export class GameScreen extends BaseScreen {
   }
 
   onMouseClick(mb: MouseButton): void {
-    // if we're hovering on an enemy and click with our primary mouse button
-    if (this.currentlyHighlightedEnemy && mb === MouseButton.Main) {
-      // fire!
-      new RangedAttackAction(
-        this.currentlyHighlightedEnemy.position.minus(this.player.position)
-      ).perform(
-        this.player,
-        this.gameMap,
-        this.messageLog
-      )
+    const action = this.inputHandler.onMouseClick(mb, this.player, this.gameMap)
+
+    if (action) {
+      // have the palyer perform it
+      action.perform(this.player, this.gameMap, this.messageLog)
       // and give the enemies a turn
       this.handleEnemyTurns()
       this.gameMap.updateFov()
     }
+
+    // this.inputHandler = this.inputHandler.nextHandler
+
+    // update the screen
+    this.render()
   }
 
   render(): void {
@@ -197,9 +152,10 @@ export class GameScreen extends BaseScreen {
     uiY += 2
     this.display.drawText(uiX + 1, uiY, 'Accuracy:')
     uiY += 1
-    barWidth = Math.floor(0.67 * (uiW - 2))
+    barWidth = Math.floor(0.5 * (uiW - 2))
     this.display.drawColouredBar(uiX + 1, uiY, uiW - 2, Colours.dimRed().asHex)
     this.display.drawColouredBar(uiX + 1, uiY, barWidth, Colours.brightGreen().asHex)
+    this.display.drawTextOver(uiX + 1, uiY, 'workinprogress', Colours.black().asHex)
     uiY += 1
 
     uiY = 48 - 4

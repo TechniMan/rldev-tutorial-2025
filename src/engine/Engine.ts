@@ -13,17 +13,12 @@ export class Engine {
   public static readonly MAP_HEIGHT_HALF = 24
   public static readonly playerScreenPosition = new Vector(Engine.MAP_HEIGHT_HALF, Engine.MAP_HEIGHT_HALF)
 
-  public static lightBlue = 'lightblue'
-  public static darkBlue = 'blue'
-
   // instance
   display: ROT.Display
 
   screen: BaseScreen
 
   constructor() {
-    //TODO input handler
-
     // renderer
     this.display = new ROT.Display({
       width: Engine.SCREEN_WIDTH,
@@ -35,14 +30,12 @@ export class Engine {
     const container = this.display.getContainer()!
     document.body.append(container)
 
-    //TODO message log
-
     // trigger initial render
     this.screen = new GameScreen(this.display)
 
     // add keydown listener
     window.addEventListener('keydown', (ev) => {
-      this.update(ev)
+      this.screen = this.screen.update(ev)
     })
     // add mousemove listener
     window.addEventListener('mousemove', (ev) => {
@@ -53,9 +46,5 @@ export class Engine {
       this.screen.onMouseClick(ev.button as MouseButton)
       this.screen.render()
     })
-  }
-
-  update(event: KeyboardEvent) {
-    this.screen = this.screen.update(event)
   }
 }
