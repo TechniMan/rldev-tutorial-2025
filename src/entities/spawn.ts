@@ -22,7 +22,8 @@ export function spawnPlayer(
 }
 
 export function spawnBugling(
-  position: Vector
+  position: Vector,
+  player: Actor
 ): Actor {
   return new Actor(
     position,
@@ -30,14 +31,15 @@ export function spawnBugling(
     Colours.entityFg().asHex,
     Colours.planetBrightBg().asHex,
     'Bugling',
-    new HostileEnemy(),
+    new HostileEnemy(player),
     [10, 0, 3],
     null
   )
 }
 
 export function spawnBug(
-  position: Vector
+  position: Vector,
+  player: Actor
 ): Actor {
   return new Actor(
     position,
@@ -45,7 +47,7 @@ export function spawnBug(
     Colours.entityFg().asHex,
     Colours.planetBrightBg().asHex,
     'Bug',
-    new HostileEnemy(),
+    new HostileEnemy(player),
     [16, 1, 4],
     null
   )

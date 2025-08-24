@@ -49,7 +49,7 @@ Display.prototype.drawFrameWithTitle = function (
   // sizings
   const innerWidth = width - 2
   const innerHeight = height - 2
-  const remainingAfterTitle = innerWidth - (title.length + 2) // add two for the borders either side of the title
+  const remainingAfterTitle = Math.max(innerWidth - (title.length + 2), 0) // add two for the borders either side of the title
   const left = Math.floor(remainingAfterTitle / 2)
   // strings that represent each row
   const topRow =

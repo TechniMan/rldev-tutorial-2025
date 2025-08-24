@@ -7,9 +7,12 @@ import type Actor from '../../Actor'
 
 export abstract class BaseAI implements BaseAction {
   path: Vector[]
+  // reference to the Player, controlled by GameScreen
+  player: Actor
 
-  protected constructor() {
+  protected constructor(player: Actor) {
     this.path = []
+    this.player = player
   }
 
   abstract perform(

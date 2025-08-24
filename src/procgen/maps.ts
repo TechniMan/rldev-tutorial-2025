@@ -1,14 +1,15 @@
 import { RNG } from 'rot-js'
 import { GameMap } from '../engine/GameMap'
-import { spawnBug, spawnBugling, spawnPlayer } from '../entities/spawn'
+import { spawnBug, spawnBugling } from '../entities/spawn'
 import Vector from '../maths/Vector'
 import { wallTile } from '../engine/Tile'
+import type Actor from '../entities/Actor'
 
 // generates a box around the edge of the map
-export function Walls(w: number, h: number): GameMap {
-  const map = new GameMap(w, h, spawnPlayer(
-    new Vector(w / 2, h / 2)
-  ))
+export function Walls(w: number, h: number, player: Actor): GameMap {
+  const map = new GameMap(w, h)
+  player.position = new Vector(w / 2, h / 2)
+  map.entities.push(player)
 
   for (let y = 0; y < h; ++y) {
     for (let x = 0; x < w; ++x) {
@@ -21,9 +22,9 @@ export function Walls(w: number, h: number): GameMap {
   return map
 }
 
-export function RockyDesert(w: number, h: number): GameMap {
-  // default map with edges and player in centre
-  const map = Walls(w, h)
+export function RockyDesert(w: number, h: number, player: Actor): GameMap {
+  // default map with walls around edge, player in centre spot
+  const map = Walls(w, h, player)
 
   // initiate some random rocks in the landscape
   for (let attempt = 0; attempt < 50; ++attempt) {
@@ -45,9 +46,9 @@ export function RockyDesert(w: number, h: number): GameMap {
     if (map.isWalkable(bugPos.x, bugPos.y)) {
       // avg 4 buglings : 1 bug
       if (RNG.getUniform() < 0.8) {
-        map.entities.push(spawnBugling(bugPos))
+        map.entities.push(spawnBugling(bugPos, player))
       } else {
-        map.entities.push(spawnBug(bugPos))
+        map.entities.push(spawnBug(bugPos, player))
       }
     }
   }
@@ -55,13 +56,13 @@ export function RockyDesert(w: number, h: number): GameMap {
   return map
 }
 
-export function TiledPlanet(): GameMap {
+export function TiledPlanet(player: Actor): GameMap {
   // make a large space to play in
-  const map = Walls(1024, 1024)
+  const map = Walls(1024, 1024, player)
 
-  //TODO randomly determine nature of large tiles of the map, e.g. 32*32 each
+  //TODO randomly determine nature of large square tiles of the map, e.g. 32 or 64 sq each
   //TODO generate each tile based on its type, filling in the map as we go
-  //TODO e.g. empty, sparse rocks, walled structure, etc
+  //TODO e.g. empty, sparse rocks, dense rocks, walled structure, bug base, etc
 
   return map
 }

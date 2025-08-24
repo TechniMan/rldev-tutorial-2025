@@ -10,9 +10,10 @@ import type Actor from '../entities/Actor'
 import MessageLog from '../engine/MessageLog'
 import MouseButton from '../input/MouseButton'
 import { GameInputHandler, type BaseInputHandler } from '../input/BaseInputHandler'
+import { spawnPlayer } from '../entities/spawn'
 
 export class GameScreen extends BaseScreen {
-  gameMap: GameMap
+  gameMap!: GameMap
   messageLog: MessageLog
   inputHandler: BaseInputHandler
 
@@ -27,11 +28,7 @@ export class GameScreen extends BaseScreen {
     display: Display,
     // serialisedGameMap: string | null = null
   ) {
-    //TODO load from the serialisedGameMap
-    //TODO else generateFloor:
-    const map = RockyDesert(64, 64)
-    super(display, map.player)
-    this.gameMap = map
+    super(display, spawnPlayer(new Vector()))
 
     this.inputHandler = new GameInputHandler()
     this.messageLog = new MessageLog()
@@ -48,8 +45,17 @@ export class GameScreen extends BaseScreen {
     )
     this.msgRenderRect = new Rect(0, 0, 0, 0)
 
-    // initial update/draw
-    this.gameMap.updateFov()
+    //TODO load from the serialisedGameMap
+    // else generate a level
+    this.generateLevel()
+  }
+
+  generateLevel(): void {
+    const map = RockyDesert(64, 64, this.player)
+    this.gameMap = map
+
+    // finally, trigger a fresh update and draw to screen the new map
+    this.gameMap.updateFov(this.player.position)
     this.render()
   }
 
@@ -68,7 +74,7 @@ export class GameScreen extends BaseScreen {
         // have the player perform it
         action.perform(this.player, this.gameMap, this.messageLog)
         this.handleEnemyTurns()
-        this.gameMap.updateFov()
+        this.gameMap.updateFov(this.player.position)
       }
     }
 
@@ -99,7 +105,7 @@ export class GameScreen extends BaseScreen {
       action.perform(this.player, this.gameMap, this.messageLog)
       // and give the enemies a turn
       this.handleEnemyTurns()
-      this.gameMap.updateFov()
+      this.gameMap.updateFov(this.player.position)
     }
 
     // this.inputHandler = this.inputHandler.nextHandler
@@ -113,7 +119,7 @@ export class GameScreen extends BaseScreen {
     this.display.clear()
 
     // draw map (first so UI etc goes on top)
-    this.gameMap.draw(this.display, this.mapRenderRect)
+    this.gameMap.draw(this.display, this.mapRenderRect, this.player.position)
 
     let uiX = this.uiRenderRect.left
     let uiY = this.uiRenderRect.top

@@ -6,8 +6,8 @@ import type Actor from '../../Actor'
 import { BaseAI } from './BaseAI'
 
 export class HostileEnemy extends BaseAI {
-  constructor() {
-    super()
+  constructor(player: Actor) {
+    super(player)
   }
 
   perform(
@@ -15,13 +15,11 @@ export class HostileEnemy extends BaseAI {
     gameMap: GameMap,
     _messageLog: MessageLog
   ) {
-    // find target
-    const target = gameMap.player
     // are we visible to the player?
     if (gameMap.isVisible(self.position.x, self.position.y)) {
       // are we in range to attack?
-      const dx = target.position.x - self.position.x
-      const dy = target.position.y - self.position.y
+      const dx = this.player.position.x - self.position.x
+      const dy = this.player.position.y - self.position.y
       const distance = Math.max(Math.abs(dx), Math.abs(dy))
       if (distance <= 1) {
         return new MeleeAttackAction(
@@ -30,7 +28,7 @@ export class HostileEnemy extends BaseAI {
       }
 
       // else, find a path to them
-      this.calculatePathTo(target.position, self, gameMap)
+      this.calculatePathTo(this.player.position, self, gameMap)
     }
 
     // if there is a valid path, attempt to move along it

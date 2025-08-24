@@ -12,9 +12,7 @@ export class GameMap {
   private _mapHeight: number
   private mapLength: number
 
-  private _player: Actor
   private _entities: Entity[]
-
   tiles: Tile[]
 
   public get mapWidth(): number {
@@ -22,9 +20,6 @@ export class GameMap {
   }
   public get mapHeight(): number {
     return this._mapHeight
-  }
-  public get player(): Actor {
-    return this._player
   }
   public get entities(): Entity[] {
     return this._entities
@@ -40,12 +35,11 @@ export class GameMap {
     }).map(e => e as Actor)
   }
 
-  constructor(w: number, h: number, p: Actor) {
+  constructor(w: number, h: number) {
     this._mapWidth = w
     this._mapHeight = h
     this.mapLength = w * h
-    this._entities = [p]
-    this._player = p
+    this._entities = []
 
     this.tiles = new Array(this.mapLength)
 
@@ -87,7 +81,11 @@ export class GameMap {
     // this.tiles[this.indexOf(x, y)].transparent
   }
 
-  updateFov() {
+  /**
+   * Re-calculate the Field-Of-View due to a change in the environment.
+   * @param origin Typically, the player's position.
+   */
+  updateFov(origin: Vector) {
     // reset visibility of tiles
     for (let i = 0; i < this.mapLength; ++i) {
       this.tiles[i].visible = false
@@ -99,7 +97,7 @@ export class GameMap {
     })
     fov.compute(
       // centre around player
-      this.player.position.x, this.player.position.y,
+      origin.x, origin.y,
       // fov range of 20
       20,
       // r is radius from player, v is visibility in range [0, 1]
@@ -113,12 +111,17 @@ export class GameMap {
       })
   }
 
-  // draws the map to the given display area
-  draw(display: Display, renderRect: Rect): void {
+  /**
+   * Draws the map to the given display area.
+   * @param display ROT.js Display to draw to.
+   * @param renderRect Area bounds to draw in.
+   * @param cameraOffset Vector to offset the map rendering by.
+   * Typically, this is the player's position in the map.
+   */
+  draw(display: Display, renderRect: Rect, cameraOffset: Vector): void {
     // offset world drawing by the player's position
     // i.e. like a camera is following them
-    const playerMapPosition = this.player.position
-    const renderOffset = new Vector().minus(playerMapPosition).plus(Engine.playerScreenPosition)
+    const renderOffset = new Vector().minus(cameraOffset).plus(Engine.playerScreenPosition)
 
     // render map
     for (let y = renderRect.top; y < renderRect.bottom; ++y) {
